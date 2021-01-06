@@ -1,3 +1,45 @@
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+:pygments-style: tango
+:source-highlighter: pygments
+:imagesdir: images/
+
 = DO285 Demos
 
 This project is designed to share demos used for the DO285 course delivery.
+
+
+== Content Sources
+
+The content for the DO285 course is the combination of the DO180 and DO280 courses into a single, streamlined 5-day course. The mapping below shows how some of the content was mapped into this new combined course.
+
+*Chapters 1-7* of DO285 course are sourced from Chapters 1-7 of the DO180 course.
+
+*Chapters 8-16* of the DO285 course are sourced from Chapters 1-9 of the DO280 course.
+
+*Appendices* A-C of the DO285 course are sourced from Appendices B-D of the DO180 course.
+
+*Appendix D* of the DO285 course is sourced from Appendix A of the DO280 course.
+
+.Classroom Setup Process and Guided Exercises/Labs
+[TIP]
+====
+The course environment scripts have been updated so that the *lab-configure* command only requires the input of the Github and Quay Usernames. Additionally all exercises have been modified to use the private OCP cluster vs. the shared OCP cluster used in the DO180 course.
+====
+
+
+== Content from the DO180 course not appearing directly in the DO285 course
+
+In order to streamline the DO285 course and have a combined course a limited amount of content needed to be removed to allow for proper consolidation.
+
+*Chapter 8* - Troubleshooting Containerized Applications
+*Chapter 9* - Comprehensive Review
+*Appendix A* - Implementing Microservices Architecture

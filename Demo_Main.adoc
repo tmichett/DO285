@@ -24,3 +24,4 @@ endif::[]
 
 :sectnums:
 include::./CH1/Configuring_The_Environment.adoc[]
+include::./CH2/Provisioning_Containerized_Services.adoc[]

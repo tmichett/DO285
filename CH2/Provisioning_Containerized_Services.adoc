@@ -1,0 +1,204 @@
+:pygments-style: tango
+:source-highlighter: coderay
+:toc:
+:toclevels: 7
+:sectnums:
+:sectnumlevels: 6
+:numbered:
+:chapter-label:
+:icons: font
+:imagesdir: images/
+
+== Provisioning Containerized Services - DEMO
+
+The following demonstration will show how to use the Universal Base Image (UBI) for RHEL8. I will allow you to see various *podman* commands in action that were demonstrated throughout the chapter. There will be a few new commands that are introduced as well.
+
+
+.DEMO - Using the RHEL8 Universal Boot Image
+=====
+
+. Search for Containers (specifically UBI)
++
+.Using *podman* to search for container images
+[source,bash]
+----
+[student@workstation Demos]$ podman search ubi8
+INDEX        NAME                                                  DESCRIPTION                                       STARS   OFFICIAL   AUTOMATED
+redhat.com   registry.access.redhat.com/ubi8                       The Universal Base Image is designed and eng...   0
+
+... output omitted ...
+
+quay.io      quay.io/tradisso/kogito-springboot-ubi8-s2i                                                             0
+[student@workstation Demos]$
+----
+
+
+. Choose and run a container accessing the *bash* shell
++
+.Running a Container and Accessing the Shell
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman run -it registry.access.redhat.com/ubi8/ubi /bin/bash
+----
++
+.Getting an Interactive Shell
+[TIP]
+====
+When running a container, it is possible to pass *-it* as a command line option and then specify an interactive shell such as */bin/bash*
+====
+
+. Verify that you are running the container and accessing the container shell.
++
+.Verifying we are in the Container
+[source,bash]
+----
+[root@811b30c61a99 /]# cat /etc/redhat-release
+Red Hat Enterprise Linux release 8.2 (Ootpa)
+----
+
+. Change or Modify the Container - Install a package
++
+.Installing Packages in the Container
+[source,bash]
+----
+[root@811b30c61a99 /]# yum install httpd
+
+... output omitted ...
+
+  redhat-logos-httpd-81.1-1.el8.noarch
+
+Complete!
+----
+
+. Attempt to Enable Daemon for HTTPD with SystemD
++
+.Failure of *systemd* and *httpd* as a Daemon
+[source,bash]
+----
+[root@811b30c61a99 /]# systemctl enable httpd --now
+Created symlink /etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service.
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
+----
++
+.Containers and Services as Daemons
+[IMPORTANT]
+====
+The container is running, but isn't a full blown virtual machine. Therefore, the systemd functionality and init system isn't running on a back-end. For apache to run, you can use specialized HTTPD containers. In order to run for this container, you will need to use *httpd &* to run the service in the background.
+====
+
+. Run the HTTP package
++
+.Executing Applications in the Background
+[source,bash]
+----
+[root@811b30c61a99 /]# httpd&
+[1] 67
+[root@811b30c61a99 /]# AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using fe80::5c7a:a2ff:fe6b:d180. Set the 'ServerName' directive globally to suppress this message
+
+[1]+  Done                    httpd
+----
+
+. Test the Webserver
++
+.Testing Apache HTTPD with Curl
+[source,bash]
+----
+[root@811b30c61a99 /]# curl http://localhost
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+... output omitted ...
+
+		</div>
+	</body>
+</html>
+[root@811b30c61a99 /]#
+----
+
+. Attempt to run old container
++
+.Use Podman to Launch Container
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman run -it registry.access.redhat.com/ubi8/ubi /bin/bash
+[root@604e03f02d11 /]# exit
+exit
+----
++
+.Container ID Changed
+[NOTE]
+====
+New container is *root@604e03f02d11 /]* and the container with HTTPD was *root@811b30c61a99*
+====
+
+
+. List Containers
++
+.Podman to list containers
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman ps -a
+CONTAINER ID   IMAGE                                        COMMAND     CREATED         STATUS                     PORTS   NAMES                 IS INFRA
+604e03f02d11   registry.access.redhat.com/ubi8/ubi:latest   /bin/bash   2 minutes ago   Exited (0) 2 minutes ago           gallant_johnson       false
+811b30c61a99   registry.access.redhat.com/ubi8/ubi:latest   /bin/bash   5 hours ago     Exited (0) 5 minutes ago           suspicious_einstein   false
+
+----
+
+. Launch container with HTTPD package
++
+.Launching Original Container
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman start 811b30c61a99
+811b30c61a9988beca57bbee769987a43f393ec5add6f44fd84244091547b926
+
+[student@workstation Demos]$ sudo podman exec -it 811b30c61a99 /bin/bash
+[root@811b30c61a99 /]#
+
+[root@811b30c61a99 /]# httpd &
+[1] 21
+[root@811b30c61a99 /]# AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using fe80::bcea:baff:fe20:ac4b. Set the 'ServerName' directive globally to suppress this message
+
+[1]+  Done                    httpd
+
+[root@811b30c61a99 /]# curl localhost
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+... output omitted ...
+
+		</div>
+	</body>
+</html>
+[root@811b30c61a99 /]#
+----
++
+.Container Management
+[CAUTION]
+====
+Stopped containers don't appear as running. Stopped containers can be seen with the *podman ps -a* command. It is possible to launch/start a stopped container with the *podman start* command, but you must provide the container name/ID in order to start the container. The *podman exec* command will allow a command to be executed interactively in the container.
+
+It is good practice to cleanup containers and images that are no longer needed.
+
+.Removing Containers
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman ps -a
+CONTAINER ID   IMAGE                                        COMMAND     CREATED          STATUS                     PORTS   NAMES                 IS INFRA
+604e03f02d11   registry.access.redhat.com/ubi8/ubi:latest   /bin/bash   14 minutes ago   Exited (0) 6 minutes ago           gallant_johnson       false
+811b30c61a99   registry.access.redhat.com/ubi8/ubi:latest   /bin/bash   5 hours ago      Exited (0) 2 seconds ago           suspicious_einstein   false
+
+
+[student@workstation Demos]$ sudo podman rm 604e03f02d11
+604e03f02d112008c0b75989055f9461fccc7db89d0efaadfbd7a2950cba9be4
+
+[student@workstation Demos]$ sudo podman ps -a
+CONTAINER ID   IMAGE                                        COMMAND     CREATED       STATUS                          PORTS   NAMES                 IS INFRA
+811b30c61a99   registry.access.redhat.com/ubi8/ubi:latest   /bin/bash   5 hours ago   Exited (0) About a minute ago           suspicious_einstein   false
+
+----
+
+====
+
+=====

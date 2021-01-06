@@ -1,3 +1,14 @@
+:pygments-style: tango
+:source-highlighter: coderay
+:toc:
+:toclevels: 7
+:sectnums:
+:sectnumlevels: 6
+:numbered:
+:chapter-label:
+:icons: font
+:imagesdir: images/
+
 == Configuring the Classroom Environment - DEMO
 
 Before configuring the classroom environment you must first setup and configure Github and Quay.IO accounts.

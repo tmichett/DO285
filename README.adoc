@@ -29,7 +29,7 @@ The content for the DO285 course is the combination of the DO180 and DO280 cours
 
 *Appendix D* of the DO285 course is sourced from Appendix A of the DO280 course.
 
-.Classroom Setup Process and Guided Exercises/Labs
+.*Classroom Setup Process and Guided Exercises/Labs*
 [TIP]
 ====
 The course environment scripts have been updated so that the *lab-configure* command only requires the input of the Github and Quay Usernames. Additionally all exercises have been modified to use the private OCP cluster vs. the shared OCP cluster used in the DO180 course.

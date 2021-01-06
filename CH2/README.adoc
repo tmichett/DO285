@@ -14,5 +14,4 @@ endif::[]
 
 = DO285 Demos
 
-This folder contains demos or instructions for Chapter 2
-.
+This folder contains demos or instructions for Chapter 2.

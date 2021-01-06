@@ -1,0 +1,48 @@
+== Configuring the Classroom Environment - DEMO
+
+Before configuring the classroom environment you must first setup and configure Github and Quay.IO accounts.
+
+.Account Creation
+[TIP]
+====
+The Github account creation steps are in Appendix A, while the Quay.IO account creation steps a located in Appendix B. It is best and easiest if you configure the Quay.IO account to rely on username and password. Additionally, if you've configured Github account to have two-factor (2FA) authentication you will need to setup the SSH config file to leverage the proper SSH keys and ID for the Github account.
+====
+
+. Configure the Lab Environment
++
+.Initial Configuration
+[source,bash]
+----
+[student@workstation ~]$ lab-configure
+
+ . Enter the GitHub account name: tmichett
+   Verifying GitHub account name: tmichett
+
+ . Enter the Quay.io account name: tmichett
+   Verifying Quay.io account name: tmichett
+
+ . Configuring RHT_OCP4_GITHUB_USER variable: SUCCESS
+ . Configuring RHT_OCP4_QUAY_USER variable:   SUCCESS
+
+ . To reconfigure, run: lab-configure -d
+
+ . Ensuring user 'developer' can log in to the OpenShift cluster.
+ . HTPasswd Identify Provider configured
+ . NOTE: It might take up to one minute before user 'developer'
+         can successfully log in to the OpenShift cluster.
+----
+
+. Fork the  https://github.com/RedHatTraining/DO180-apps repository.
+
+. Clone the DO180-Apps Repository
++
+.Cloning the Repository
+[source,bash]
+----
+[student@workstation ~]$ git clone https://github.com/tmichett/DO180-apps
+Cloning into 'DO180-apps'...
+remote: Enumerating objects: 106, done.
+remote: Total 106 (delta 0), reused 0 (delta 0), pack-reused 106
+Receiving objects: 100% (106/106), 226.47 KiB | 2.49 MiB/s, done.
+Resolving deltas: 100% (24/24), done
+----

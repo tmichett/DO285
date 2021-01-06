@@ -15,3 +15,5 @@ endif::[]
 = DO285 Demos
 
 This folder contains demos or instructions for Chapter 3.
+
+The container image has been saved and is available from: http://people.redhat.com/~tmichett/OCP/httpd-demo.tar

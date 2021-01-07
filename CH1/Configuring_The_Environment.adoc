@@ -9,7 +9,7 @@
 :icons: font
 :imagesdir: images/
 
-== Configuring the Classroom Environment - DEMO
+=== Configuring the Classroom Environment - DEMO
 
 Before configuring the classroom environment you must first setup and configure Github and Quay.IO accounts.
 

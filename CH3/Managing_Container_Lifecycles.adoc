@@ -1,0 +1,172 @@
+:pygments-style: tango
+:source-highlighter: coderay
+:toc:
+:toclevels: 7
+:sectnums:
+:sectnumlevels: 6
+:numbered:
+:chapter-label:
+:icons: font
+:imagesdir: images/
+
+=== Managing the Lifecycle of a Container - DEMO
+
+The following demonstration will review basic *podman* commands on managing the lifecycle of a container.
+
+.Verify Registries and Podman Configuration
+[TIP]
+====
+Ensure you are logged in and that the registries can be contacted.
+
+.Checking Registries and Podman Configuration
+[source,bash]
+----
+[student@workstation DO285]$ lab manage-lifecycle start
+----
+
+====
+
+
+.DEMONSTRATION - Container Lifecycles
+=====
+
+. Locate HTTPD Container to run
++
+.Use *podman* to find an apache container
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman search httpd
+INDEX        NAME                                                                          DESCRIPTION                                       STARS   OFFICIAL   AUTOMATED
+redhat.com   registry.access.redhat.com/rhscl/httpd-24-rhel7                               Apache HTTP 2.4 Server
+
+... output omitted ...
+----
+
+. Run apache container
++
+.Running container with *podman run* and specifying a *name*
+[source,bash]
+----
+[student@workstation ~]$ sudo podman run --name HTTPD-Demo1 redhattraining/httpd-parent:2.4
+AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.88.100.121. Set the 'ServerName' directive globally to suppress this message
+
+----
+
+. Verifying container statuses
++
+.Using *podman ps -a* to see all containers
+[source,bash]
+----
+[student@workstation DO285]$ sudo podman ps -a
+CONTAINER ID  IMAGE                                    COMMAND               CREATED             STATUS                    PORTS  NAMES
+b529337efa25  quay.io/redhattraining/httpd-parent:2.4  /bin/sh -c /usr/s...  About a minute ago  Exited (0) 9 seconds ago         HTTPD-Demo1
+----
+
+. Removing the *HTTPD* Demo Container
++
+.Using *podman rm* to remove stopped containers
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman rm HTTPD-Demo1
+
+----
+
+
+. Run as HTTPD container as a daemon in background
++
+.Running container with *podman run* and specifying a *name* as well as the *-d* to run as daemon
+[source,bash]
+----
+[student@workstation ~]$ sudo podman run --name HTTPD-Demo1 -d redhattraining/httpd-parent:2.4
+07d19e01c64d6cd44db8a9ddbdde341119b148078ec14684e9bea4a18b521550
+
+
+----
+
+. Inspecting running containers
++
+.Using *podman inspect* to get container details
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman inspect HTTPD-Demo1
+[
+    {
+        "ID": "a874387ac7ee8bbce0b65badedd5db6b5e608ca21e9e9f294a957056fb4b11b7",
+
+... output omitted ...
+
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "10.88.100.111",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+
+... output omitted ...
+----
++
+.Filtering/Formatting with Go Templates
+[TIP]
+====
+It is possible to use the *-f* option to utilize a formatting template to filter and retrieve a single piece of desired information.
+
+.Using *grep* to filter/format results
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman inspect HTTPD-Demo1 | grep -i ipaddress
+            "SecondaryIPAddresses": null,
+            "IPAddress": "10.88.100.111",
+----
+
+.Using *podman inspect -f* options
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman inspect -f '{{ .NetworkSettings.IPAddress }}' HTTPD-Demo1
+10.88.100.111
+----
+====
+
+. Open interactive shell in container
++
+.Using *podman exec* to get a shell
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman exec -it HTTPD-Demo1 /bin/bash
+bash-4.2$ cat /etc/redhat-release
+Red Hat Enterprise Linux Server release 7.8 (Maipo)
+
+bash-4.4# curl localhost
+Hello from the httpd-parent container!
+
+----
+
+. Stop the container
++
+.Use *podman stop* to stop the running container
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman stop HTTPD-Demo1
+a874387ac7ee8bbce0b65badedd5db6b5e608ca21e9e9f294a957056fb4b11b7
+----
+
+. Delete the container
++
+.Use *podman rm* to Delete the container
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman rm HTTPD-Demo1
+a874387ac7ee8bbce0b65badedd5db6b5e608ca21e9e9f294a957056fb4b11b7
+----
++
+.Cleanup of container images
+[IMPORTANT]
+====
+It is important to cleanup the actual container images if the there are no containers using the images and there are no plans to use the container image for other containers. This will conserve disk space on the system.
+
+.Use *podman rmi* to remove a container image
+[source,bash]
+----
+[student@workstation Demos]$ sudo podman rmi rhscl/httpd-24-rhel7
+a0cb054ab975a1d93ffff3ff932052ce5f92d7bff0a918f9f3a9f430f83a3acd
+----
+====
+
+=====

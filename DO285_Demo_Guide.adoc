@@ -23,5 +23,6 @@ endif::[]
 
 
 :sectnums:
-include::./CH1/Configuring_The_Environment.adoc[]
-include::./CH2/Provisioning_Containerized_Services.adoc[]
+include::./CH1/CH1.adoc[]
+include::./CH2/CH2.adoc[]
+include::./CH3/CH3.adoc[]

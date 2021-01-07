@@ -12,3 +12,4 @@
 == Managing Containers
 
 include::./Managing_Container_Lifecycles.adoc[]
+include::./Attaching_Persistent_Storage.adoc[]
